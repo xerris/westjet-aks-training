@@ -41,18 +41,6 @@ spec:
   selector:
     app: azure-vote-back
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: azure-vote-front
-spec:
-  ports:
-  - protocol: TCP
-    port: 443
-    targetPort: 80
-  selector:
-    app: azure-vote-front
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -88,6 +76,18 @@ spec:
             value: "Flames"
           - name: VOTE2VALUE
             value: "Canucks"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azure-vote-front
+spec:
+  ports:
+  - protocol: TCP
+    port: 443
+    targetPort: 80
+  selector:
+    app: azure-vote-front
 ---
 apiVersion: v1
 kind: Service
