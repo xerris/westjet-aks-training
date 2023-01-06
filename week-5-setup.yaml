@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aspnetapp
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: aspnetapp
+  template:
+    metadata:
+      labels:
+        app: aspnetapp
+    spec:
+      containers:
+      - image: "REMOVE_ME_AND_THE_FOLLOWING_DOT.mcr.microsoft.com/dotnet/samples:aspnetapp"
+        name: aspnetapp-image
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          requests:
+            memory: "64Ti"
+            cpu: "250m"
+          limits:
+            memory: "128Ti"
+            cpu: "500m"
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: aspnetapp
+spec:
+  selector:
+    app: aspnetapp
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aspnetapp
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          service:
+            name: aspnetapp
+            port:
+              number: 80
+        pathType: Exact
